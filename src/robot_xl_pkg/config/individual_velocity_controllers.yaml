@@ -1,0 +1,24 @@
+# 1. Left Wheel Velocity Controller
+left_wheel_velocity_controller:
+  type: "velocity_controllers/JointVelocityController"
+  joint: 'left_wheel_joint'     # Must match the joint name in your SDF/URDF
+
+  # PID Gains (Tune how the motor applies force to hit the desired speed)
+  # These values are examples and should be tuned for your specific robot mass/friction.
+  pid:
+    p: 100.0
+    i: 0.01
+    d: 10.0
+    i_clamp: 1.0
+
+# 2. Right Wheel Velocity Controller
+right_wheel_velocity_controller:
+  type: "velocity_controllers/JointVelocityController"
+  joint: 'right_wheel_joint'    # Must match the joint name in your SDF/URDF
+
+  # Use the same PID gains for consistency
+  pid:
+    p: 100.0
+    i: 0.01
+    d: 10.0
+    i_clamp: 1.0

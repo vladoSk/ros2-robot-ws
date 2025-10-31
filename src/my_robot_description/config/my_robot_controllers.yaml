@@ -1,0 +1,43 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100
+
+    diff_drive_controller:
+      type: diff_drive_controller/DiffDriveController
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+diff_drive_controller:
+  ros__parameters:
+    # Wheel parameters that MUST match the URDF
+    left_wheel_names: ["left_wheel_joint"]
+    right_wheel_names: ["right_wheel_joint"]
+    wheel_separation: 0.44  # Distance between the centers of the two wheels (0.22 * 2)
+    wheel_radius: 0.1       # Radius of the wheels
+
+    # Odometry
+    odom_frame_id: "odom"
+    base_frame_id: "base_footprint" # Use the ground-truth frame
+    publish_rate: 50.0
+
+    # Topic to subscribe to for velocity commands
+    cmd_vel_topic: "/cmd_vel"
+    cmd_vel_timeout: 0.5
+    # publish_limited_velocity: true
+    # use_stamped_vel: false
+    # enable_odom_tf: true
+
+    # Velocity and acceleration limits
+    linear:
+      x:
+        has_velocity_limits: true
+        max_velocity: 1.0
+        has_acceleration_limits: true
+        max_acceleration: 1.0
+    angular:
+      z:
+        has_velocity_limits: true
+        max_velocity: 1.5
+        has_acceleration_limits: true
+        max_acceleration: 2.0
