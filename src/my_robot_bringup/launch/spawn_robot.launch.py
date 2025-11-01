@@ -2,33 +2,34 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, TextSubstitution
+from launch.substitutions import Command
 from launch_ros.actions import Node
-from launch.event_handlers import OnProcessExit
-from launch.actions import IncludeLaunchDescription, RegisterEventHandler
+from launch.actions import IncludeLaunchDescription
 
 def generate_launch_description():
-    # Get controller config file path
-    controller_config_path = os.path.join(
-        get_package_share_directory('my_robot_description'),
-        'config',
-        'my_robot_controllers.yaml'
-    )
     # Get URDF file path
-    urdf_file_name = 'my_robot.urdf'
-    urdf_path = os.path.join(
+    xacro_file_name = 'my_robot.urdf.xacro'
+    xacro_path = os.path.join(
         get_package_share_directory('my_robot_description'),
         'urdf',
-        urdf_file_name
+        xacro_file_name
     )
     # Gazebo launch
     gazebo_launch_file_dir = os.path.join(get_package_share_directory('gazebo_ros'), 'launch')
     gazebo_world_path = os.path.join(get_package_share_directory('my_robot_bringup'), 'worlds', 'lawn.sdf')
 
+    # Controller manager YAML file
+    controller_manager_config = os.path.join(
+        get_package_share_directory('my_robot_description'),
+        'config',
+        'my_robot_controllers.yaml'
+    )
+
     gazebo_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(gazebo_launch_file_dir, 'gazebo.launch.py')),
         launch_arguments={
             'world': gazebo_world_path,
+            'force_system': 'false',  # Disable problematic force_system plugin
         }.items(),
     )
 
@@ -38,7 +39,9 @@ def generate_launch_description():
         executable='robot_state_publisher',
         name='robot_state_publisher',
         output='screen',
-        parameters=[{'robot_description': open(urdf_path).read()}]
+        parameters=[
+            {'robot_description': Command(['xacro ', xacro_path, ' controller_config_file:=', controller_manager_config])},
+        ]
     )
 
     # Spawn robot in Gazebo
@@ -49,43 +52,36 @@ def generate_launch_description():
         output='screen',
     )
 
-    # Controller Manager
-    controller_manager_node = Node(
+    # The 'spawner' node is a ROS 2 tool that calls the 'load_controller' service
+    # on the controller_manager. The controller_manager is running inside Gazebo now,
+    # thanks to the 'gazebo_ros2_control' plugin in the URDF.
+    load_joint_state_broadcaster = Node(
         package='controller_manager',
-        executable='ros2_control_node',
-        parameters=[controller_config_path],
+        executable='spawner',
+        arguments=['joint_state_broadcaster', '--controller-manager', '/controller_manager'],
         output='screen',
     )
 
-    # This RegisterEventHandler will wait for the spawn_entity process to exit and then
-    # start the controller_manager and the spawners in a sequence.
-    # This is a more robust way to ensure all services are available before they are called.
-    delayed_controller_manager_spawner = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=spawn_entity,
-            on_exit=[
-                controller_manager_node,
-                # The following spawners will be executed sequentially
-                RegisterEventHandler(
-                    event_handler=OnProcessExit(
-                        target_action=controller_manager_node,
-                        on_exit=[
-                            Node(
-                                package='controller_manager',
-                                executable='spawner',
-                                arguments=['joint_state_broadcaster', '--controller-manager', '/controller_manager'],
-                                output='screen',
-                            ),
-                        ],
-                    )
-                ),
-            ],
-        )
+    load_diff_drive_controller = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['diff_drive_controller', '--controller-manager', '/controller_manager'],
+        output='screen',
+    )
+
+    # Twist stamper node to convert Twist to TwistStamped
+    twist_stamper = Node(
+        package='my_robot_bringup',
+        executable='twist_stamper.py',
+        name='twist_stamper',
+        output='screen',
     )
 
     return LaunchDescription([
         gazebo_cmd,
         robot_state_publisher_node,
         spawn_entity,
-        delayed_controller_manager_spawner,
+        load_joint_state_broadcaster,
+        load_diff_drive_controller,
+        twist_stamper,
     ])

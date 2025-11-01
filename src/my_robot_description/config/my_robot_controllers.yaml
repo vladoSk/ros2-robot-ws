@@ -21,12 +21,8 @@ diff_drive_controller:
     base_frame_id: "base_footprint" # Use the ground-truth frame
     publish_rate: 50.0
 
-    # Topic to subscribe to for velocity commands
-    cmd_vel_topic: "/cmd_vel"
+    # Velocity command timeout
     cmd_vel_timeout: 0.5
-    # publish_limited_velocity: true
-    # use_stamped_vel: false
-    # enable_odom_tf: true
 
     # Velocity and acceleration limits
     linear:

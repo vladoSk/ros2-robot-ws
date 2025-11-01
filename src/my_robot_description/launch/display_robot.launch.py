@@ -6,7 +6,7 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     # Get URDF file path
-    urdf_file_name = 'my_robot.urdf'
+    urdf_file_name = 'my_robot.urdf.xacro'
     urdf_path = os.path.join(
         get_package_share_directory('my_robot_description'),
         'urdf',
