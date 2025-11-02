@@ -388,6 +388,13 @@ For interactive control:
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 
+### View robot in rviz
+
+View robot in rviz2 environment
+```bash
+rviz2 -d ~/robot_ws/install/my_robot_bringup/share/my_robot_bringup/rviz/robot_view.rviz
+```
+
 ## 8. View Camera Feed
 
 View the camera feed using RViz2 or `rqt_image_view`:
