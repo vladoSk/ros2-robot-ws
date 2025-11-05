@@ -1,0 +1,44 @@
+/**:
+  ros__parameters:
+    # Object Detector Parameters
+    # HSV color range for red objects (range 1: low red values)
+    lower_hue_1: 0
+    lower_saturation_1: 100
+    lower_value_1: 100
+    upper_hue_1: 10
+    upper_saturation_1: 255
+    upper_value_1: 255
+
+    # HSV color range for red objects (range 2: high red values)
+    # Red wraps around in HSV color space
+    lower_hue_2: 170
+    lower_saturation_2: 100
+    lower_value_2: 100
+    upper_hue_2: 180
+    upper_saturation_2: 255
+    upper_value_2: 255
+
+    # Detection parameters
+    min_area: 500  # Minimum contour area to consider as detection
+    camera_topic: '/my_robot/camera/image_raw'
+    show_debug: true
+
+object_follower:
+  ros__parameters:
+    # Follower control parameters
+    enabled: true
+    linear_speed: 0.2      # Maximum linear velocity (m/s)
+    angular_speed: 0.5     # Maximum angular velocity (rad/s)
+
+    # Image parameters
+    image_width: 640
+    image_height: 480
+    center_tolerance: 50   # Pixels from center to consider "centered"
+
+    # Area-based distance control
+    min_area: 5000         # If area < this, move forward (object too far)
+    max_area: 100000       # If area > this, move backward (object too close)
+
+    # PID gains (Proportional control)
+    kp_angular: 0.003      # Proportional gain for angular velocity
+    kp_linear: 0.00001     # Proportional gain for linear velocity
