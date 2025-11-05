@@ -1,6 +1,8 @@
 # My Robot Object Detection
 
-Object detection package for my_robot using OpenCV and ROS2. This package implements color-based object detection (default: red objects) and robot following behavior.
+Object detection package for my_robot using OpenCV and ROS2 (C++). This package implements color-based object detection (default: red objects) and robot following behavior.
+
+**Implementation:** Pure C++ using rclcpp, cv_bridge, and OpenCV
 
 ## Features
 
@@ -211,6 +213,13 @@ twist_stamper
     ↓
 Robot moves!
 ```
+
+## Source Code
+
+- **object_detector node**: `src/object_detector.cpp`
+- **object_follower node**: `src/object_follower.cpp`
+- **Configuration**: `config/object_detection_params.yaml`
+- **Launch files**: `launch/object_detection.launch.py`, `launch/full_system.launch.py`
 
 ## Future Enhancements
 

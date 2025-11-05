@@ -1,6 +1,8 @@
 # Object Detection System for My Robot
 
-This document describes the object detection system implemented for the my_robot project using OpenCV and ROS2.
+This document describes the object detection system implemented for the my_robot project using OpenCV and ROS2 (C++).
+
+**Implementation:** Pure C++ using rclcpp, cv_bridge, and OpenCV 4.x
 
 ## Overview
 
@@ -561,19 +563,16 @@ To integrate with navigation stack:
 my_robot_object_detection/
 ├── config/
 │   └── object_detection_params.yaml     # All tunable parameters
+├── include/
+│   └── my_robot_object_detection/       # C++ headers (if needed)
 ├── launch/
 │   ├── object_detection.launch.py       # Detection + follower
 │   └── full_system.launch.py            # Robot + detection
-├── my_robot_object_detection/
-│   ├── __init__.py
-│   ├── object_detector.py               # Detection node
-│   └── object_follower.py               # Follower node
-├── resource/
-│   └── my_robot_object_detection
-├── CMakeLists.txt
-├── package.xml
-├── setup.cfg
-├── setup.py
+├── src/
+│   ├── object_detector.cpp              # Detection node (C++)
+│   └── object_follower.cpp              # Follower node (C++)
+├── CMakeLists.txt                       # CMake build configuration
+├── package.xml                          # ROS2 package manifest
 └── README.md
 ```
 
