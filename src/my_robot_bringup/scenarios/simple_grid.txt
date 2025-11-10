@@ -1,0 +1,15 @@
+// Simple 4x4 Grid of Tiles
+//
+// Legend:
+//   . = empty/grass
+//   T = interactive tile
+//   # = brick wall
+//
+########
+#......#
+#.TTTT.#
+#.TTTT.#
+#.TTTT.#
+#.TTTT.#
+#......#
+########
