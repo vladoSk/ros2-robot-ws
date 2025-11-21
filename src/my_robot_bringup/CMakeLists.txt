@@ -7,9 +7,11 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(gazebo_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(ament_index_cpp REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -23,13 +25,28 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+# Add tile_manager executable
+add_executable(tile_manager src/tile_manager.cpp)
+ament_target_dependencies(tile_manager
+  rclcpp
+  gazebo_msgs
+  nav_msgs
+  geometry_msgs
+  ament_index_cpp
+)
+
 install(
-  DIRECTORY launch worlds rviz
+  DIRECTORY launch worlds rviz scenarios
   DESTINATION share/${PROJECT_NAME}
 )
 
 install(
   PROGRAMS scripts/twist_stamper.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(
+  TARGETS tile_manager
   DESTINATION lib/${PROJECT_NAME}
 )
 

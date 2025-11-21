@@ -86,6 +86,7 @@ dkms.conf
 .claude.json
 .claude.json.backup
 .bash*
+.vscode/
 *.key
 .profile
 */.ssh/

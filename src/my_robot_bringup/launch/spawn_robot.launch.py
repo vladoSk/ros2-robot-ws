@@ -77,6 +77,20 @@ def generate_launch_description():
         output='screen',
     )
 
+    tile_manager = Node(
+        package='my_robot_bringup',
+        executable='tile_manager',
+        name='tile_manager',
+        output='screen',
+        parameters=[{
+            'grid_size': 4,
+            'tile_spacing': 0.51,
+            'mode': 'color_change',             # disappear
+            'detection_radius': 0.2,
+            'scenario_file': os.path.join(get_package_share_directory('my_robot_bringup'), 'scenarios', 'lawn_with_walls.txt')
+        }]
+    )
+
     return LaunchDescription([
         gazebo_cmd,
         robot_state_publisher_node,
@@ -84,4 +98,5 @@ def generate_launch_description():
         load_joint_state_broadcaster,
         load_diff_drive_controller,
         twist_stamper,
+        tile_manager,
     ])
